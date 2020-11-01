@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'loginpage.dart';
+import 'package:food_ninja/loginpage.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -99,7 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
   void _onRegister() {}
 
   void _onLogin() {
-    Navigator.push(context,
+    Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
   }
 }
