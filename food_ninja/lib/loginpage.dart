@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:food_ninja/registerpage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -11,12 +14,12 @@ class _LoginPageState extends State<LoginPage> {
   String _email = "";
   final TextEditingController _pscontroller = TextEditingController();
   String _pass = "";
-  bool _isChecked = false;
+  bool _rememberMe = false;
+  SharedPreferences prefs;
 
   @override
   void initState() {
     loadpref();
-    print('Init: $_email');
     super.initState();
   }
 
@@ -37,8 +40,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: <Widget>[
                     Image.asset(
                       'assets/images/foodninjared.png',
-                      width: 190,
-                      height: 190,
+                      scale: 2,
                     ),
                     TextField(
                         controller: _emcontroller,
@@ -71,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       children: <Widget>[
                         Checkbox(
-                          value: _isChecked,
+                          value: _rememberMe,
                           onChanged: (bool value) {
                             _onChange(value);
                           },
@@ -98,12 +100,11 @@ class _LoginPageState extends State<LoginPage> {
 
   void _onPress() {
     print('Press');
-   
   }
 
   void _onRegister() {
-    print('onRegister');
-    
+    Navigator.push(context,
+        MaterialPageRoute(builder: (BuildContext context) => RegisterPage()));
   }
 
   void _onForgot() {
@@ -112,18 +113,69 @@ class _LoginPageState extends State<LoginPage> {
 
   void _onChange(bool value) {
     setState(() {
-      _isChecked = value;
+      _rememberMe = value;
       savepref(value);
     });
   }
 
   void loadpref() async {
-    print('Inside loadpref()');
-    
+    prefs = await SharedPreferences.getInstance();
+    _email = (prefs.getString('email')) ?? '';
+    _pass = (prefs.getString('password')) ?? '';
+    _rememberMe = (prefs.getBool('rememberme')) ?? false;
+    if (_email.isNotEmpty) {
+      setState(() {
+        _emcontroller.text = _email;
+        _pscontroller.text = _pass;
+        _rememberMe = _rememberMe;
+      });
+    }
   }
 
   void savepref(bool value) async {
-    
+    prefs = await SharedPreferences.getInstance();
+    _email = _emcontroller.text;
+    _pass = _pscontroller.text;
+
+    if (value) {
+      if (_email.length < 5 && _pass.length < 3) {
+        print("EMAIL/PASSWORD EMPTY");
+        _rememberMe = false;
+        Toast.show(
+          "Email/password empty!!!",
+          context,
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.BOTTOM,
+        );
+        return;
+      } else {
+        await prefs.setString('email', _email);
+        await prefs.setString('password', _pass);
+        await prefs.setBool('rememberme', value);
+        Toast.show(
+          "Preferences saved",
+          context,
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.BOTTOM,
+        );
+        print("SUCCESS");
+      }
+    } else {
+      await prefs.setString('email', '');
+      await prefs.setString('password', '');
+      await prefs.setBool('rememberme', false);
+      setState(() {
+        _emcontroller.text = "";
+        _pscontroller.text = "";
+        _rememberMe = false;
+      });
+      Toast.show(
+          "Preferences removed",
+          context,
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.BOTTOM,
+        );
+    }
   }
 
   Future<bool> _onBackPressAppBar() async {
@@ -131,6 +183,4 @@ class _LoginPageState extends State<LoginPage> {
     print('Backpress');
     return Future.value(false);
   }
-
- 
 }
