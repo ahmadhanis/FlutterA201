@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:food_ninja/loginpage.dart';
+import 'package:http/http.dart' as http;
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:toast/toast.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -9,8 +12,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _namecontroller = TextEditingController();
   final TextEditingController _emcontroller = TextEditingController();
-  final TextEditingController _psacontroller = TextEditingController();
-  final TextEditingController _psbcontroller = TextEditingController();
+  final TextEditingController _pscontroller = TextEditingController();
   final TextEditingController _phcontroller = TextEditingController();
 
   String _email = "";
@@ -18,6 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String _name = "";
   String _phone = "";
   bool _passwordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +53,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         decoration: InputDecoration(
                             labelText: 'Mobile', icon: Icon(Icons.phone))),
                     TextField(
-                      controller: _psacontroller,
+                      controller: _pscontroller,
                       decoration: InputDecoration(
                         labelText: 'Password',
                         icon: Icon(Icons.lock),
@@ -63,7 +66,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             color: Theme.of(context).primaryColorDark,
                           ),
                           onPressed: () {
-                            // Update the state i.e. toogle the state of passwordVisible variable
+                            // Update the state i.e. toogle the state of passwordVisible variablegithu
                             setState(() {
                               _passwordVisible = !_passwordVisible;
                             });
@@ -95,7 +98,43 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void _onRegister() {}
+  Future<void> _onRegister() async {
+    _name = _namecontroller.text;
+    _email = _emcontroller.text;
+    _pass = _pscontroller.text;
+    _phone = _phcontroller.text;
+    ProgressDialog pr = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    pr.style(message: "Registration...");
+    await pr.show();
+
+    http.post("https://slumberjer.com/foodninjav2/php/register_user.php",
+        body: {
+          "name": _name,
+          "email": _email,
+          "password": _pass,
+          "phone": _phone,
+        }).then((res) {
+      if (res.body == "success") {
+        Toast.show(
+          "Registration success",
+          context,
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.BOTTOM,
+        );
+      } else {
+        Toast.show(
+          "Registration failed",
+          context,
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.BOTTOM,
+        );
+      }
+    }).catchError((err) {
+      print(err);
+    });
+    await pr.hide();
+  }
 
   void _onLogin() {
     Navigator.pushReplacement(context,
