@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:food_ninja/loginpage.dart';
-import 'package:http/http.dart' as http;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
+import 'package:http/http.dart' as http;
+import 'user.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -16,10 +18,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _phcontroller = TextEditingController();
 
   String _email = "";
-  String _pass = "";
+  String _password = "";
   String _name = "";
   String _phone = "";
   bool _passwordVisible = false;
+  bool _rememberMe = false;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +78,19 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       obscureText: _passwordVisible,
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
+                    Row(
+                      children: <Widget>[
+                        Checkbox(
+                          value: _rememberMe,
+                          onChanged: (bool value) {
+                            _onChange(value);
+                          },
+                        ),
+                        Text('Remember Me', style: TextStyle(fontSize: 16))
+                      ],
+                    ),
+                    SizedBox(height: 10),
                     MaterialButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0)),
@@ -98,36 +113,41 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Future<void> _onRegister() async {
+  void _onRegister() async {
     _name = _namecontroller.text;
     _email = _emcontroller.text;
-    _pass = _pscontroller.text;
+    _password = _pscontroller.text;
     _phone = _phcontroller.text;
     ProgressDialog pr = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false);
     pr.style(message: "Registration...");
     await pr.show();
-
     http.post("https://slumberjer.com/foodninjav2/php/register_user.php",
         body: {
           "name": _name,
           "email": _email,
-          "password": _pass,
+          "password": _password,
           "phone": _phone,
         }).then((res) {
-      if (res.body == "success") {
+          print(res.body);
+      if (res.body == "succes") {
         Toast.show(
           "Registration success",
           context,
           duration: Toast.LENGTH_LONG,
-          gravity: Toast.BOTTOM,
+          gravity: Toast.TOP,
         );
+        if (_rememberMe) {
+          savepref();
+        }
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
       } else {
         Toast.show(
           "Registration failed",
           context,
           duration: Toast.LENGTH_LONG,
-          gravity: Toast.BOTTOM,
+          gravity: Toast.TOP,
         );
       }
     }).catchError((err) {
@@ -139,5 +159,20 @@ class _RegisterPageState extends State<RegisterPage> {
   void _onLogin() {
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+  }
+
+  void _onChange(bool value) {
+    setState(() {
+      _rememberMe = value;
+    });
+  }
+
+  void savepref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _email = _emcontroller.text;
+    _password = _pscontroller.text;
+    await prefs.setString('email', _email);
+    await prefs.setString('password', _password);
+    await prefs.setBool('rememberme', true);
   }
 }
