@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:food_ninja/loginpage.dart';
+import 'package:food_ninja/loginscreen.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:http/http.dart' as http;
-import 'user.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _namecontroller = TextEditingController();
   final TextEditingController _emcontroller = TextEditingController();
   final TextEditingController _pscontroller = TextEditingController();
@@ -141,7 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
           savepref();
         }
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+            MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
       } else {
         Toast.show(
           "Registration failed",
@@ -158,7 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _onLogin() {
     Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
+        MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
   }
 
   void _onChange(bool value) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_ninja/loginpage.dart';
+import 'package:food_ninja/loginscreen.dart';
 
 void main() => runApp(MyApp());
 

@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:food_ninja/registerpage.dart';
+import 'package:food_ninja/registerscreen.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
+import 'package:http/http.dart' as http;
 
-class LoginPage extends StatefulWidget {
+import 'mainscreen.dart';
+
+class LoginScreen extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emcontroller = TextEditingController();
   String _email = "";
   final TextEditingController _pscontroller = TextEditingController();
-  String _pass = "";
+  String _password = "";
   bool _rememberMe = false;
   SharedPreferences prefs;
 
@@ -65,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.black,
                       textColor: Colors.white,
                       elevation: 15,
-                      onPressed: _onPress,
+                      onPressed: _onLogin,
                     ),
                     SizedBox(
                       height: 10,
@@ -98,13 +102,44 @@ class _LoginPageState extends State<LoginPage> {
             )));
   }
 
-  void _onPress() {
-    print('Press');
+  Future<void> _onLogin() async {
+    _email = _emcontroller.text;
+    _password = _pscontroller.text;
+     ProgressDialog pr = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false);
+    pr.style(message: "Login...");
+    await pr.show();
+    http.post("https://slumberjer.com/foodninjav2/php/login_user.php", body: {
+      "email": _email,
+      "password": _password,
+    }).then((res) {
+      print(res.body);
+      if (res.body == "success") {
+        Toast.show(
+          "Login Succes",
+          context,
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.TOP,
+        );
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+      } else {
+        Toast.show(
+          "Login failed",
+          context,
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.TOP,
+        );
+      }
+    }).catchError((err) {
+      print(err);
+    });
+    await pr.hide();
   }
 
   void _onRegister() {
     Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) => RegisterPage()));
+        MaterialPageRoute(builder: (BuildContext context) => RegisterScreen()));
   }
 
   void _onForgot() {
@@ -121,12 +156,12 @@ class _LoginPageState extends State<LoginPage> {
   void loadpref() async {
     prefs = await SharedPreferences.getInstance();
     _email = (prefs.getString('email')) ?? '';
-    _pass = (prefs.getString('password')) ?? '';
+    _password = (prefs.getString('password')) ?? '';
     _rememberMe = (prefs.getBool('rememberme')) ?? false;
     if (_email.isNotEmpty) {
       setState(() {
         _emcontroller.text = _email;
-        _pscontroller.text = _pass;
+        _pscontroller.text = _password;
         _rememberMe = _rememberMe;
       });
     }
@@ -135,10 +170,10 @@ class _LoginPageState extends State<LoginPage> {
   void savepref(bool value) async {
     prefs = await SharedPreferences.getInstance();
     _email = _emcontroller.text;
-    _pass = _pscontroller.text;
+    _password = _pscontroller.text;
 
     if (value) {
-      if (_email.length < 5 && _pass.length < 3) {
+      if (_email.length < 5 && _password.length < 3) {
         print("EMAIL/PASSWORD EMPTY");
         _rememberMe = false;
         Toast.show(
@@ -150,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
         return;
       } else {
         await prefs.setString('email', _email);
-        await prefs.setString('password', _pass);
+        await prefs.setString('password', _password);
         await prefs.setBool('rememberme', value);
         Toast.show(
           "Preferences saved",
@@ -170,11 +205,11 @@ class _LoginPageState extends State<LoginPage> {
         _rememberMe = false;
       });
       Toast.show(
-          "Preferences removed",
-          context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.BOTTOM,
-        );
+        "Preferences removed",
+        context,
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.BOTTOM,
+      );
     }
   }
 
