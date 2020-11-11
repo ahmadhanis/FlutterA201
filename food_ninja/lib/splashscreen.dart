@@ -16,8 +16,7 @@ class MyApp extends StatelessWidget {
             children: <Widget>[
               Image.asset(
                 'assets/images/foodninjared.png',
-                width: 230,
-                height: 230,
+               scale: 2,
               ),
               SizedBox(
                 height: 20,
@@ -53,7 +52,7 @@ class _ProgressIndicatorState extends State<ProgressIndicator>
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => LoginPage()));
+                    builder: (BuildContext context) => LoginScreen()));
           }
         });
       });
@@ -70,11 +69,8 @@ class _ProgressIndicatorState extends State<ProgressIndicator>
   Widget build(BuildContext context) {
     return new Center(
         child: new Container(
-      //width: 200,
-      //color: Colors.redAccent,
       child: CircularProgressIndicator(
         value: animation.value,
-        //backgroundColor: Colors.black,
         valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),
       ),
     ));

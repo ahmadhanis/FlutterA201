@@ -31,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       body: Container(
           child: Padding(
-              padding: EdgeInsets.all(30.0),
+              padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -61,14 +61,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         icon: Icon(Icons.lock),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            // Based on passwordVisible state choose the icon
                             _passwordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off,
                             color: Theme.of(context).primaryColorDark,
                           ),
                           onPressed: () {
-                            // Update the state i.e. toogle the state of passwordVisible variablegithu
                             setState(() {
                               _passwordVisible = !_passwordVisible;
                             });
@@ -117,6 +115,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _email = _emcontroller.text;
     _password = _pscontroller.text;
     _phone = _phcontroller.text;
+    if (validateEmail(_email) && validatePassword(_password)) {
+       Toast.show(
+          "Check your email/password",
+          context,
+          duration: Toast.LENGTH_LONG,
+          gravity: Toast.TOP,
+        );
+      return;
+    }
     ProgressDialog pr = new ProgressDialog(context,
         type: ProgressDialogType.Normal, isDismissible: false);
     pr.style(message: "Registration...");
@@ -128,24 +135,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
           "password": _password,
           "phone": _phone,
         }).then((res) {
-          print(res.body);
+      print(res.body);
       if (res.body == "succes") {
         Toast.show(
-          "Registration success",
+          "Registration success. An email has been sent to .$_email. Please check your email for OTP verification. Also check in your spam folder.",
           context,
-          duration: Toast.LENGTH_LONG,
+          duration: Toast.LENGTH_SLONG,
           gravity: Toast.TOP,
         );
         if (_rememberMe) {
           savepref();
         }
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
+       _onLogin();
       } else {
         Toast.show(
           "Registration failed",
           context,
-          duration: Toast.LENGTH_LONG,
+          duration: Toast.LENGTH_SLONG,
           gravity: Toast.TOP,
         );
       }
@@ -173,5 +179,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     await prefs.setString('email', _email);
     await prefs.setString('password', _password);
     await prefs.setBool('rememberme', true);
+  }
+
+  bool validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    return (!regex.hasMatch(value)) ? false : true;
+  }
+
+  bool validatePassword(String value){
+        String  pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
+        RegExp regExp = new RegExp(pattern);
+        return regExp.hasMatch(value);
   }
 }

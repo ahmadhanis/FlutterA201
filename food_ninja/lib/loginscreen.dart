@@ -5,7 +5,6 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:http/http.dart' as http;
-
 import 'mainscreen.dart';
 
 class LoginScreen extends StatefulWidget {
