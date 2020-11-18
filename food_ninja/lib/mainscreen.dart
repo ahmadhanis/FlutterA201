@@ -1,7 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:food_ninja/restaurant.dart';
 import 'package:http/http.dart' as http;
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'restdetails.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -11,7 +15,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   List restList;
   double screenHeight, screenWidth;
-  String titlecenter = "No Data Found";
+  String titlecenter = "Loading Restaurant...";
+
   @override
   void initState() {
     super.initState();
@@ -41,17 +46,44 @@ class _MainScreenState extends State<MainScreen> {
                 ))))
               : Flexible(
                   child: GridView.count(
-                  crossAxisCount: 1,
-                  childAspectRatio: (screenWidth / screenHeight) / 0.22,
+                  crossAxisCount: 2,
+                  childAspectRatio: (screenWidth / screenHeight) / 0.8,
                   children: List.generate(restList.length, (index) {
                     return Padding(
-                      padding: EdgeInsets.all(1),
-                      child: Card(
-                        child: Column(
-                          children: [Text(restList[index]['restname'])],
-                        ),
-                      ),
-                    );
+                        padding: EdgeInsets.all(1),
+                        child: Card(
+                          child: InkWell(
+                            onTap: () => _loadRestaurantDetail(index),
+                            child: Column(
+                              children: [
+                                Container(
+                                    height: screenHeight / 3.8,
+                                    width: screenWidth / 1.2,
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          "http://slumberjer.com/foodninjav2/images/restaurantimages/${restList[index]['restimage']}.jpg",
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          new CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          new Icon(
+                                        Icons.broken_image,
+                                        size: screenWidth / 2,
+                                      ),
+                                    )),
+                                SizedBox(height: 5),
+                                Text(
+                                  restList[index]['restname'],
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(restList[index]['restphone']),
+                                Text(restList[index]['restlocation']),
+                              ],
+                            ),
+                          ),
+                        ));
                   }),
                 ))
         ],
@@ -67,6 +99,9 @@ class _MainScreenState extends State<MainScreen> {
       print(res.body);
       if (res.body == "nodata") {
         restList = null;
+        setState(() {
+          titlecenter = "No Restaurant Found";
+        });
       } else {
         setState(() {
           var jsondata = json.decode(res.body);
@@ -76,5 +111,20 @@ class _MainScreenState extends State<MainScreen> {
     }).catchError((err) {
       print(err);
     });
+  }
+
+  _loadRestaurantDetail(int index) {
+    print(restList[index]['restname']);
+    Restaurant restaurant = new Restaurant(
+        restid: restList[index]['restid'],
+        restname: restList[index]['restname'],
+        restlocation: restList[index]['restlocation'],
+        restphone: restList[index]['restphone'],
+        restimage: restList[index]['restimage']);
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => RestDetails(rest: restaurant)));
   }
 }
