@@ -19,6 +19,7 @@ class _RestScreenDetailsState extends State<RestScreenDetails> {
   double screenHeight, screenWidth;
   List foodList;
   String titlecenter = "Loading Foods...";
+  
   @override
   void initState() {
     super.initState();
