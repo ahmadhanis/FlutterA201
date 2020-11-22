@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:food_ninja/restaurant.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'restdetails.dart';
 
 class MainScreen extends StatefulWidget {
@@ -29,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Main Page'),
+        title: Text('Available Restaurants'),
       ),
       body: Column(
         children: [
@@ -125,6 +123,6 @@ class _MainScreenState extends State<MainScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => RestDetails(rest: restaurant)));
+            builder: (BuildContext context) => RestScreenDetails(rest: restaurant)));
   }
 }
