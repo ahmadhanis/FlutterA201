@@ -13,6 +13,7 @@ if ($result->num_rows > 0) {
         $foodlist[foodname] = $row["FOODNAME"];
         $foodlist[foodprice] = $row["FOODPRICE"];
         $foodlist[foodqty] = $row["QUANTITY"];
+        $foodlist[imgname] = $row["IMAGENAME"];
         array_push($response["foods"], $foodlist);
     }
     echo json_encode($response);
