@@ -25,7 +25,8 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       appBar: AppBar(
         title: Text('Available Restaurants'),
       ),
@@ -86,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
                 ))
         ],
       ),
-    );
+    ));
   }
 
   void _loadRestaurant() {
@@ -123,6 +124,7 @@ class _MainScreenState extends State<MainScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => RestScreenDetails(rest: restaurant)));
+            builder: (BuildContext context) =>
+                RestScreenDetails(rest: restaurant)));
   }
 }
