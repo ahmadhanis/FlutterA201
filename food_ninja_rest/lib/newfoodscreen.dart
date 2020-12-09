@@ -287,15 +287,15 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
     _foodqty = _foodqtycontroller.text;
     String base64Image = base64Encode(_image.readAsBytesSync());
 
-     http.post("https://slumberjer.com/foodninjav2/php/add_newfood.php",
-        body: {
-          "foodname": _foodname,
-          "foodprice": _foodprice,
-          "foodqty": _foodqty,
-          "encoded_string": base64Image,
-          "imagename": widget.restaurant.restid + "-${dateTime.microsecondsSinceEpoch}",
-          "restid": widget.restaurant.restid,
-        }).then((res) {
+    http.post("https://slumberjer.com/foodninjav2/php/add_newfood.php", body: {
+      "foodname": _foodname,
+      "foodprice": _foodprice,
+      "foodqty": _foodqty,
+      "encoded_string": base64Image,
+      "imagename":
+          widget.restaurant.restid + "-${dateTime.microsecondsSinceEpoch}",
+      "restid": widget.restaurant.restid,
+    }).then((res) {
       print(res.body);
       if (res.body == "succes") {
         Toast.show(
@@ -304,7 +304,7 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
           duration: Toast.LENGTH_LONG,
           gravity: Toast.TOP,
         );
-        
+        Navigator.pop(context);
       } else {
         Toast.show(
           "Failed",

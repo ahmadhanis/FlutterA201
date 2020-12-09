@@ -4,8 +4,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'restdetails.dart';
+import 'user.dart';
+import 'ShoppingCartScreen.dart';
 
 class MainScreen extends StatefulWidget {
+  final User user;
+
+  const MainScreen({Key key, this.user}) : super(key: key);
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -29,6 +34,17 @@ class _MainScreenState extends State<MainScreen> {
         child: Scaffold(
       appBar: AppBar(
         title: Text('Available Restaurants'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              _shoppinCartScreen();
+            },
+          )
+        ],
       ),
       body: Column(
         children: [
@@ -124,7 +140,16 @@ class _MainScreenState extends State<MainScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) =>
-                RestScreenDetails(rest: restaurant)));
+            builder: (BuildContext context) => RestScreenDetails(
+                  rest: restaurant,
+                  user: widget.user,
+                )));
+  }
+
+  void _shoppinCartScreen() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => ShoppingCartScreen(user:widget.user)));
   }
 }

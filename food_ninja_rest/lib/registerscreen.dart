@@ -255,7 +255,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -307,8 +306,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onLogin() {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
+    // Navigator.pushReplacement(context,
+    //     MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
+    Navigator.pop(context);
   }
 
   void _onChange(bool value) {

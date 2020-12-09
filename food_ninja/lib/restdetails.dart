@@ -6,10 +6,13 @@ import 'food.dart';
 import 'restaurant.dart';
 import 'package:http/http.dart' as http;
 import 'foodscreen.dart';
+import 'user.dart';
 
 class RestScreenDetails extends StatefulWidget {
   final Restaurant rest;
-  const RestScreenDetails({Key key, this.rest}) : super(key: key);
+  final User user;
+
+  const RestScreenDetails({Key key, this.rest, this.user}) : super(key: key);
 
   @override
   _RestScreenDetailsState createState() => _RestScreenDetailsState();
@@ -19,7 +22,7 @@ class _RestScreenDetailsState extends State<RestScreenDetails> {
   double screenHeight, screenWidth;
   List foodList;
   String titlecenter = "Loading Foods...";
-  
+
   @override
   void initState() {
     super.initState();
@@ -76,7 +79,7 @@ class _RestScreenDetailsState extends State<RestScreenDetails> {
                                   width: screenWidth / 1.2,
                                   child: CachedNetworkImage(
                                     imageUrl:
-                                        "http://slumberjer.com/foodninjav2/images/foodimages/${foodList[index]['foodid']}.jpg",
+                                        "http://slumberjer.com/foodninjav2/images/foodimages/${foodList[index]['imgname']}.jpg",
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) =>
                                         new CircularProgressIndicator(),
@@ -131,6 +134,7 @@ class _RestScreenDetailsState extends State<RestScreenDetails> {
         foodname: foodList[index]['foodname'],
         foodprice: foodList[index]['foodprice'],
         foodqty: foodList[index]['foodqty'],
+        foodimg: foodList[index]['imgname'],
         restid: widget.rest.restid);
 
     Navigator.push(
@@ -138,6 +142,7 @@ class _RestScreenDetailsState extends State<RestScreenDetails> {
         MaterialPageRoute(
             builder: (BuildContext context) => FoodScreenDetails(
                   food: curfood,
+                  user: widget.user,
                 )));
   }
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 25, 2020 at 10:04 PM
+-- Generation Time: Dec 09, 2020 at 02:55 PM
 -- Server version: 10.3.25-MariaDB-cll-lve
 -- PHP Version: 7.3.6
 
@@ -21,6 +21,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `slumber6_foodninjav2`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `FOODORDER`
+--
+
+CREATE TABLE `FOODORDER` (
+  `EMAIL` varchar(50) NOT NULL,
+  `FOODID` varchar(7) NOT NULL,
+  `FOODQTY` varchar(5) NOT NULL,
+  `REMARKS` varchar(100) NOT NULL,
+  `RESTID` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `FOODORDER`
+--
+
+INSERT INTO `FOODORDER` (`EMAIL`, `FOODID`, `FOODQTY`, `REMARKS`, `RESTID`) VALUES
+('degipo8342@rvemold.com', '22', '13', '', '10'),
+('degipo8342@rvemold.com', '24', '5', 'sup test 1', '10'),
+('degipo8342@rvemold.com', '3', '5', 'Garing', '2');
 
 -- --------------------------------------------------------
 
@@ -62,7 +85,10 @@ INSERT INTO `FOODS` (`FOODID`, `FOODNAME`, `FOODPRICE`, `QUANTITY`, `IMAGENAME`,
 (18, 'Laksa Lemak', '4.50', '38', '18', '3'),
 (19, 'Laksa Johor', '3.50', '19', '19', '3'),
 (20, 'Laksa Penang', '5.50', '29', '20', '3'),
-(21, 'Tomyam Susu', '8.00', '205', '1-1606281612819523', '1');
+(21, 'Tomyam Susu', '8.00', '205', '1-1606281612819523', '1'),
+(22, 'Curry Laksa', '5.20', '30', '10-1606880350157367', '10'),
+(23, 'Kuetiau Kungfu', '5.60', '30', '10-1606881110305849', '10'),
+(24, 'Mee Sup', '6.00', '45', '10-1606881241367582', '10');
 
 -- --------------------------------------------------------
 
@@ -118,7 +144,15 @@ INSERT INTO `USER` (`NAME`, `EMAIL`, `PHONE`, `PASSWORD`, `DATEREG`, `OTP`) VALU
 ('lili', 'lili@gmail.com', '123', '7c4a8d09ca3762af61e59520943dc26494f8941b', '2020-11-17 16:44:53.043873', '5106'),
 ('mimi', 'mimi@gmail.com', '123', '7c4a8d09ca3762af61e59520943dc26494f8941b', '2020-11-17 16:46:45.285842', '1259'),
 ('ana', 'ana@gmail.com', '123', '7c4a8d09ca3762af61e59520943dc26494f8941b', '2020-11-17 16:37:53.033188', '4669'),
-('Kayiti Esam', 'degipo8342@rvemold.com', '01945543345', '6367c48dd193d56ea7b0baad25b19455e529f5ee', '2020-11-10 12:23:15.379391', '0');
+('Kayiti Esam', 'degipo8342@rvemold.com', '01945543345', '6367c48dd193d56ea7b0baad25b19455e529f5ee', '2020-11-10 12:23:15.379391', '0'),
+('Student', 'student@gmail.com', '0123456789', '2c0413e4bdd9c697c7284c4d97d029f0e241598e', '2020-11-27 14:04:16.971516', '4651'),
+('', '', '', 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2020-12-04 11:32:20.204281', '3256'),
+('lkk', 'lkk@yahoo.com', '012345678', '8cb2237d0679ca88db6464eac60da96345513964', '2020-12-04 15:26:32.227938', '4233'),
+('abc', 'abc@yahoo.com', '0123344556', 'a9993e364706816aba3e25717850c26c9cd0d89d', '2020-12-04 15:42:24.316853', '6801'),
+('123', '123@gmail.com', '1234567', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2020-12-04 15:46:59.527248', '9319'),
+('nowis', 'nowis60840@hebgsw.com', '012345678', '6a204d9bb1c192219585a8f6d2993fa454eb94b4', '2020-12-04 15:57:52.398066', '0'),
+('nowis', 'nowis60840@hegsw.com', '0123456789', '6a204d9bb1c192219585a8f6d2993fa454eb94b4', '2020-12-04 16:04:18.931600', '6967'),
+('poydecelte', 'poydecelte@nedoz.com', '0112345678', '1f4a04e5543d8760660bb080226040b987b88d47', '2020-12-04 16:18:38.549307', '0');
 
 --
 -- Indexes for dumped tables
@@ -150,7 +184,7 @@ ALTER TABLE `USER`
 -- AUTO_INCREMENT for table `FOODS`
 --
 ALTER TABLE `FOODS`
-  MODIFY `FOODID` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `FOODID` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `RESTAURANT`
