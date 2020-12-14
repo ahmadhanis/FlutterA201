@@ -8,8 +8,11 @@ import 'newfoodscreen.dart';
 import 'restaurant.dart';
 import 'package:http/http.dart' as http;
 
+import 'updatefoodscreen.dart';
+
 class MainScreen extends StatefulWidget {
   final Restaurant rest;
+
   const MainScreen({Key key, this.rest}) : super(key: key);
 
   @override
@@ -20,11 +23,12 @@ class _MainScreenState extends State<MainScreen> {
   double screenHeight, screenWidth;
   List foodList;
   String titlecenter = "Loading Foods...";
+  String type = "Food";
 
   @override
   void initState() {
     super.initState();
-    _loadFoods();
+    _loadFoods(type);
   }
 
   @override
@@ -36,17 +40,6 @@ class _MainScreenState extends State<MainScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(widget.rest.restname),
-            actions: [
-              new DropdownButton<String>(
-                items: <String>['A', 'B', 'C', 'D'].map((String value) {
-                  return new DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(value),
-                  );
-                }).toList(),
-                onChanged: (_) {},
-              )
-            ],
           ),
           floatingActionButton: SpeedDial(
             animatedIcon: AnimatedIcons.menu_close,
@@ -76,7 +69,18 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     )),
                 Positioned(
-                    top: 100,
+                  bottom: 10,
+                  left: 10,
+                  child: Text(
+                    widget.rest.reststatus,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Positioned(
+                    top: 70,
                     right: 2,
                     child: Card(
                         child: Container(
@@ -89,19 +93,64 @@ class _MainScreenState extends State<MainScreen> {
                                 Text(widget.rest.restname,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 18)),
+                                        fontSize: 16)),
                                 Text(widget.rest.restlocation),
                                 Text(widget.rest.restphone),
                               ],
                             )))),
               ],
             ),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              IconButton(
+                icon: Icon(Icons.food_bank),
+                iconSize: 32,
+                onPressed: () {
+                  setState(() {
+                    type = "Food";
+                    _loadFoods(type);
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.emoji_food_beverage),
+                iconSize: 32,
+                onPressed: () {
+                  setState(() {
+                    type = "Beverage";
+                    _loadFoods(type);
+                  });
+                },
+              ),
+              Flexible(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.menu_book),
+                    iconSize: 32,
+                    onPressed: () {
+                      setState(() {});
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.sensor_door),
+                    iconSize: 32,
+                    onPressed: () {
+                      setState(() {});
+                    },
+                  ),
+                ],
+              ))
+            ]),
             Center(
                 child: Container(
                     child: Text(
               "Your Current Servings",
               style: TextStyle(fontWeight: FontWeight.bold),
             ))),
+            Divider(
+              color: Colors.grey,
+            ),
             foodList == null
                 ? Flexible(
                     child: Container(
@@ -116,58 +165,78 @@ class _MainScreenState extends State<MainScreen> {
                 : Flexible(
                     child: GridView.count(
                     crossAxisCount: 2,
-                    childAspectRatio: (screenWidth / screenHeight) / 0.8,
+                    childAspectRatio: (screenWidth / screenHeight) / 0.7,
                     children: List.generate(foodList.length, (index) {
                       return Padding(
-                          padding: EdgeInsets.all(1),
-                          child: Card(
+                        padding: EdgeInsets.all(3),
+                        child: Card(
                             child: InkWell(
-                              onTap: () => _loadFoodDetails(index),
-                              child: Column(
-                                children: [
-                                  Container(
-                                      height: screenHeight / 3.8,
-                                      width: screenWidth / 1.2,
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            "http://slumberjer.com/foodninjav2/images/foodimages/${foodList[index]['imgname']}.jpg",
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) =>
-                                            new CircularProgressIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            new Icon(
-                                          Icons.broken_image,
-                                          size: screenWidth / 2,
-                                        ),
-                                      )),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    foodList[index]['foodname'],
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text("RM " + foodList[index]['foodprice']),
-                                  Text("Qty: " + foodList[index]['foodqty']),
-                                ],
-                              ),
+                          onTap: () => _loadFoodDetails(index),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                    height: screenHeight / 5,
+                                    width: screenWidth / 2.5,
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          "http://slumberjer.com/foodninjav2/images/foodimages/${foodList[index]['imgname']}.jpg",
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          new CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          new Icon(
+                                        Icons.broken_image,
+                                        size: screenWidth / 2,
+                                      ),
+                                    )),
+                                SizedBox(height: 5),
+                                Text(
+                                  foodList[index]['foodname'],
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text("RM " +
+                                    foodList[index]['foodprice'] +
+                                    " | Qty: " +
+                                    foodList[index]['foodqty']),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      foodList[index]['status'],
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.check),
+                                      iconSize: 16,
+                                      onPressed: () {
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
-                          ));
+                          ),
+                        )),
+                      );
                     }),
                   )),
           ]),
         ));
   }
 
-  void _loadFoods() {
+  void _loadFoods(String ftype) {
     http.post("https://slumberjer.com/foodninjav2/php/load_foods.php", body: {
       "restid": widget.rest.restid,
+      "type": ftype,
     }).then((res) {
       print(res.body);
       if (res.body == "nodata") {
         foodList = null;
         setState(() {
-          titlecenter = "No Food Available";
+          titlecenter = "No $type Available";
         });
       } else {
         setState(() {
@@ -180,20 +249,22 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  _loadFoodDetails(int index) {
+  _loadFoodDetails(int index) async {
     Food curfood = new Food(
         foodid: foodList[index]['foodid'],
         foodname: foodList[index]['foodname'],
         foodprice: foodList[index]['foodprice'],
         foodqty: foodList[index]['foodqty'],
+        foodimg: foodList[index]['imgname'],
         restid: widget.rest.restid);
 
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (BuildContext context) => FoodScreenDetails(
-    //               food: curfood,
-    //             )));
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => UpdateFoodScreen(
+                  food: curfood,
+                )));
+    _loadFoods(type);
   }
 
   Future<void> _newFoodScreen() async {
@@ -203,7 +274,7 @@ class _MainScreenState extends State<MainScreen> {
             builder: (BuildContext context) => NewFoodScreen(
                   restaurant: widget.rest,
                 )));
-    _loadFoods();
+    _loadFoods(type);
   }
 
   Future<bool> _onBackPressed() {

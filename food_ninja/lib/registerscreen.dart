@@ -140,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Toast.show(
           "Registration success. An email has been sent to .$_email. Please check your email for OTP verification. Also check in your spam folder.",
           context,
-          duration: Toast.LENGTH_SLONG,
+          duration: Toast.LENGTH_LONG,
           gravity: Toast.TOP,
         );
         if (_rememberMe) {
@@ -151,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Toast.show(
           "Registration failed",
           context,
-          duration: Toast.LENGTH_SLONG,
+          duration: Toast.LENGTH_LONG,
           gravity: Toast.TOP,
         );
       }

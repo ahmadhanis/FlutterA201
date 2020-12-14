@@ -19,17 +19,23 @@ class _MainScreenState extends State<MainScreen> {
   List restList;
   double screenHeight, screenWidth;
   String titlecenter = "Loading Restaurant...";
-
+  var locList = {"Changlun", "Sintok", "Bkt Kayu Hitam"};
+  String selectedLoc = "Changlun";
   @override
   void initState() {
     super.initState();
-    _loadRestaurant();
+    _loadRestaurant(selectedLoc);
   }
 
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+    var date = new DateTime.now().toString();
+    var dateParse = DateTime.parse(date);
+    var formattedDate =
+        "${dateParse.hour}:${dateParse.minute}-${dateParse.day}/${dateParse.month}/${dateParse.year}";
+
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -48,6 +54,59 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: Column(
         children: [
+          Container(
+            //height: screenHeight / 12,
+            width: screenWidth / 0.5,
+            child: SingleChildScrollView(child:  
+            Card(
+              child: Column(
+                children: [
+                  Text(
+                    "Welcome " + widget.user.name,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text("The time is " + formattedDate),
+                ],
+              ),
+            ),
+          )),
+          //Divider(color: Colors.grey),
+          Container(
+              height: 40,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Select Location"),
+                  SizedBox(width: 40),
+                  DropdownButton(
+                    //sorting dropdownoption
+                    hint: Text(
+                      'Quantity',
+                      style: TextStyle(
+                          //color: Color.fromRGBO(101, 255, 218, 50),
+                          ),
+                    ), // Not necessary for Option 1
+                    value: selectedLoc,
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedLoc = newValue;
+                        print(selectedLoc);
+                        _loadRestaurant(selectedLoc);
+                      });
+                    },
+                    items: locList.map((selectedLoc) {
+                      return DropdownMenuItem(
+                        child: new Text(selectedLoc.toString(),
+                            style: TextStyle(color: Colors.black)),
+                        value: selectedLoc,
+                      );
+                    }).toList(),
+                  ),
+                ],
+              )),
+
+          Text("Please choose a restaurant"),
+          Divider(color: Colors.grey),
           restList == null
               ? Flexible(
                   child: Container(
@@ -62,17 +121,18 @@ class _MainScreenState extends State<MainScreen> {
               : Flexible(
                   child: GridView.count(
                   crossAxisCount: 2,
-                  childAspectRatio: (screenWidth / screenHeight) / 0.8,
+                  childAspectRatio: (screenWidth / screenHeight) / 0.65,
                   children: List.generate(restList.length, (index) {
                     return Padding(
                         padding: EdgeInsets.all(1),
                         child: Card(
-                          child: InkWell(
-                            onTap: () => _loadRestaurantDetail(index),
+                            child: InkWell(
+                          onTap: () => _loadRestaurantDetail(index),
+                          child: SingleChildScrollView(
                             child: Column(
                               children: [
                                 Container(
-                                    height: screenHeight / 3.8,
+                                    height: screenHeight / 4.5,
                                     width: screenWidth / 1.2,
                                     child: CachedNetworkImage(
                                       imageUrl:
@@ -94,11 +154,10 @@ class _MainScreenState extends State<MainScreen> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(restList[index]['restphone']),
-                                Text(restList[index]['restlocation']),
                               ],
                             ),
                           ),
-                        ));
+                        )));
                   }),
                 ))
         ],
@@ -106,10 +165,10 @@ class _MainScreenState extends State<MainScreen> {
     ));
   }
 
-  void _loadRestaurant() {
+  void _loadRestaurant(String loc) {
     http.post("https://slumberjer.com/foodninjav2/php/load_restaurant.php",
         body: {
-          "location": "Changlun",
+          "location": loc,
         }).then((res) {
       print(res.body);
       if (res.body == "nodata") {
@@ -135,7 +194,12 @@ class _MainScreenState extends State<MainScreen> {
         restname: restList[index]['restname'],
         restlocation: restList[index]['restlocation'],
         restphone: restList[index]['restphone'],
-        restimage: restList[index]['restimage']);
+        restimage: restList[index]['restimage'],
+        restradius: restList[index]['restradius'],
+        restlatitude: restList[index]['restlatitude'],
+        restlongitude: restList[index]['restlongitude'],
+        restdelivery: restList[index]['restdelivery']
+        );
 
     Navigator.push(
         context,
@@ -147,9 +211,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _shoppinCartScreen() {
+    
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => ShoppingCartScreen(user:widget.user)));
+            builder: (BuildContext context) =>
+                ShoppingCartScreen(user: widget.user)));
   }
 }

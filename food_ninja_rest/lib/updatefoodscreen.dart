@@ -3,19 +3,23 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'food.dart';
 import 'restaurant.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:toast/toast.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
-class NewFoodScreen extends StatefulWidget {
+class UpdateFoodScreen extends StatefulWidget {
   final Restaurant restaurant;
+  final Food food;
 
-  const NewFoodScreen({Key key, this.restaurant}) : super(key: key);
+  const UpdateFoodScreen({Key key, this.restaurant, this.food})
+      : super(key: key);
   @override
-  _NewFoodScreenState createState() => _NewFoodScreenState();
+  _UpdateFoodScreenState createState() => _UpdateFoodScreenState();
 }
 
-class _NewFoodScreenState extends State<NewFoodScreen> {
+class _UpdateFoodScreenState extends State<UpdateFoodScreen> {
   final TextEditingController _foodnamecontroller = TextEditingController();
   final TextEditingController _foodpricecontroller = TextEditingController();
   final TextEditingController _foodqtycontroller = TextEditingController();
@@ -28,14 +32,22 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
   String pathAsset = 'assets/images/camera.png';
   int _radioValue = 0;
   String foodtype = "Food";
+  @override
+  void initState() {
+    super.initState();
+    _foodnamecontroller.text = widget.food.foodname;
+    _foodpricecontroller.text = widget.food.foodprice;
+    _foodqtycontroller.text = widget.food.foodqty;
+  }
 
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Food/Beverage'),
+        title: Text('Update Food/Beverage'),
       ),
       body: Container(
           child: Padding(
@@ -44,29 +56,21 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
                 child: Column(
                   children: [
                     GestureDetector(
-                        onTap: () => {_onPictureSelection()},
-                        child: Container(
-                          height: screenHeight / 3.2,
-                          width: screenWidth / 1.8,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: _image == null
-                                  ? AssetImage(pathAsset)
-                                  : FileImage(_image),
-                              fit: BoxFit.cover,
-                            ),
-                            border: Border.all(
-                              width: 3.0,
-                              color: Colors.grey,
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(
-                                    5.0) //         <--- border radius here
-                                ),
-                          ),
-                        )),
+                        // onTap: () => {_onPictureSelection()},
+                        child: CachedNetworkImage(
+                      imageUrl:
+                          "http://slumberjer.com/foodninjav2/images/foodimages/${widget.food.foodimg}.jpg",
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          new CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => new Icon(
+                        Icons.broken_image,
+                        size: screenWidth / 2,
+                      ),
+                    )),
                     SizedBox(height: 5),
-                    Text("Click image to take food picture",
-                        style: TextStyle(fontSize: 10.0, color: Colors.black)),
+                    // Text("Click image to take food picture",
+                    //     style: TextStyle(fontSize: 10.0, color: Colors.black)),
                     SizedBox(height: 5),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -108,7 +112,7 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
                           borderRadius: BorderRadius.circular(20.0)),
                       minWidth: 300,
                       height: 50,
-                      child: Text('Add New Food'),
+                      child: Text('Update'),
                       color: Colors.black,
                       textColor: Colors.white,
                       elevation: 15,
@@ -157,7 +161,7 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
                       child: Text(
                         "Take picture from:",
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 16),
                       )),
@@ -176,7 +180,6 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
                               color: Colors.black,
                             )),
                         //color: Color.fromRGBO(101, 255, 218, 50),
-                        color:Colors.blueGrey,
                         textColor: Colors.black,
                         elevation: 10,
                         onPressed: () =>
@@ -194,7 +197,7 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
                               color: Colors.black,
                             )),
                         //color: Color.fromRGBO(101, 255, 218, 50),
-                        color:Colors.blueGrey,
+                        color:Colors.grey,
                         textColor: Colors.black,
                         elevation: 10,
                         onPressed: () => {
@@ -273,7 +276,7 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
         // return object of type Dialog
         return AlertDialog(
           title: new Text(
-            "Register new Food? ",
+            "Update " + widget.food.foodname,
             style: TextStyle(
               color: Colors.black,
             ),
@@ -297,7 +300,7 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                _onAddFood();
+                _onUpdateFood();
               },
             ),
             new FlatButton(
@@ -317,25 +320,20 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
     );
   }
 
-  void _onAddFood() {
-    final dateTime = DateTime.now();
+  void _onUpdateFood() {
     _foodname = _foodnamecontroller.text;
     _foodprice = _foodpricecontroller.text;
     _foodqty = _foodqtycontroller.text;
-    String base64Image = base64Encode(_image.readAsBytesSync());
 
-    http.post("https://slumberjer.com/foodninjav2/php/add_newfood.php", body: {
+    http.post("https://slumberjer.com/foodninjav2/php/update_food.php", body: {
+      "foodid": widget.food.foodid,
       "foodname": _foodname,
       "foodprice": _foodprice,
       "foodqty": _foodqty,
       "foodtype": foodtype,
-      "encoded_string": base64Image,
-      "imagename":
-          widget.restaurant.restid + "-${dateTime.microsecondsSinceEpoch}",
-      "restid": widget.restaurant.restid,
     }).then((res) {
       print(res.body);
-      if (res.body == "succes") {
+      if (res.body == "success") {
         Toast.show(
           "Success",
           context,

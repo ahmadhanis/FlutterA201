@@ -3,8 +3,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'food.dart';
 import 'package:http/http.dart' as http;
 import 'package:toast/toast.dart';
-
 import 'user.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 class FoodScreenDetails extends StatefulWidget {
   final Food food;
@@ -22,6 +22,13 @@ class _FoodScreenDetailsState extends State<FoodScreenDetails> {
   final TextEditingController _remcontroller = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    selectedQty = int.parse(widget.food.foodcurqty) ?? 1;
+    _remcontroller.text = widget.food.remarks;
+  }
+
+  @override
   Widget build(BuildContext context) {
     var foodQty =
         Iterable<int>.generate(int.parse(widget.food.foodqty) + 1).toList();
@@ -36,10 +43,11 @@ class _FoodScreenDetailsState extends State<FoodScreenDetails> {
                 padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
                 child: SingleChildScrollView(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                          height: screenHeight / 4,
-                          width: screenWidth / 0.3,
+                          height: screenHeight / 3.8,
+                          width: screenWidth / 0.1,
                           child: CachedNetworkImage(
                             imageUrl:
                                 "http://slumberjer.com/foodninjav2/images/foodimages/${widget.food.foodimg}.jpg",
@@ -51,42 +59,42 @@ class _FoodScreenDetailsState extends State<FoodScreenDetails> {
                               size: screenWidth / 2,
                             ),
                           )),
+                      SizedBox(height: 10),
                       Row(
                         children: [
-                          Icon(Icons.confirmation_number),
+                          Text("Select Quantity"),
                           SizedBox(width: 10),
-                          Container(
-                            height: 60,
-                            child: DropdownButton(
-                              //sorting dropdownoption
-                              hint: Text(
-                                'Quantity',
-                                style: TextStyle(
-                                    //color: Color.fromRGBO(101, 255, 218, 50),
-                                    ),
-                              ), // Not necessary for Option 1
-                              value: selectedQty,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  selectedQty = newValue;
-                                  print(selectedQty);
-                                });
-                              },
-                              items: foodQty.map((selectedQty) {
-                                return DropdownMenuItem(
-                                  child: new Text(selectedQty.toString(),
-                                      style: TextStyle(color: Colors.black)),
-                                  value: selectedQty,
-                                );
-                              }).toList(),
+                          NumberPicker.horizontal(
+                            decoration: BoxDecoration(
+                              border: new Border(
+                                top: new BorderSide(
+                                  style: BorderStyle.solid,
+                                  color: Colors.black26,
+                                ),
+                                bottom: new BorderSide(
+                                  style: BorderStyle.solid,
+                                  color: Colors.black26,
+                                ),
+                              ),
                             ),
+                            initialValue: selectedQty,
+                            minValue: 1,
+                            maxValue: foodQty.length - 1,
+                            step: 1,
+                            zeroPad: false,
+                            onChanged: (value) =>
+                                setState(() => selectedQty = value),
                           ),
                         ],
                       ),
+                      SizedBox(height: 10),
+                      Text("Price RM " +
+                          (selectedQty * double.parse(widget.food.foodprice))
+                              .toStringAsFixed(2),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
                       TextField(
                           controller: _remcontroller,
                           keyboardType: TextInputType.text,
-                          maxLines: 5,
+                          maxLines: 3,
                           decoration: InputDecoration(
                               labelText: 'Your Remark',
                               icon: Icon(Icons.notes))),
@@ -96,7 +104,7 @@ class _FoodScreenDetailsState extends State<FoodScreenDetails> {
                             borderRadius: BorderRadius.circular(20.0)),
                         minWidth: 300,
                         height: 50,
-                        child: Text('Add to Cart'),
+                        child: Text('Add/Update Cart'),
                         color: Colors.black,
                         textColor: Colors.white,
                         elevation: 15,
@@ -160,7 +168,7 @@ class _FoodScreenDetailsState extends State<FoodScreenDetails> {
   }
 
   void _orderFood() {
-    http.post("https://slumberjer.com/foodninjav2/php/insert_order.php", body: {
+    http.post("https://slumberjer.com/foodninjav2/php/insert_cart.php", body: {
       "email": widget.user.email,
       "foodid": widget.food.foodid,
       "foodqty": selectedQty.toString(),

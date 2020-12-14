@@ -19,7 +19,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emcontroller = TextEditingController();
   final TextEditingController _pscontroller = TextEditingController();
   final TextEditingController _phcontroller = TextEditingController();
-  double screenHeight, screenWidth;
+  final TextEditingController _radcontroller = TextEditingController();
+  final TextEditingController _delcontroller = TextEditingController();
+
+  double screenHeight, screenWidth, latitude, longitude;
+  String radius, delivery;
   String _email = "";
   String _password = "";
   String _name = "";
@@ -91,6 +95,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         decoration: InputDecoration(
                             labelText: 'Owner Mobile',
                             icon: Icon(Icons.phone))),
+                    TextField(
+                        controller: _radcontroller,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: 'Radius (km)',
+                            icon: Icon(Icons.map_rounded))),
+                    TextField(
+                        controller: _delcontroller,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: 'Deliver charge (RM per km)',
+                            icon: Icon(Icons.delivery_dining))),
                     TextField(
                       controller: _pscontroller,
                       decoration: InputDecoration(

@@ -120,21 +120,31 @@ class _LoginScreenState extends State<LoginScreen> {
       List userdata = res.body.split(",");
       if (userdata[0] == "success") {
         Restaurant restaurant = new Restaurant(
-            restid: userdata[1],
-            restemail: _email,
-            restname: userdata[2],
-            restlocation: userdata[5],
-            restphone: userdata[4],
-            restimage: userdata[6],
-            restdatereg: userdata[7]);
+          restid: userdata[1],
+          restemail: _email,
+          restname: userdata[2],
+          restlocation: userdata[5],
+          restphone: userdata[4],
+          restimage: userdata[6],
+          restdatereg: userdata[7],
+          reststatus: userdata[8],
+          restlatitude: userdata[9],
+          restlongitude: userdata[10],
+          restradius: userdata[11],
+          restdelivery: userdata[12],
+        );
         Toast.show(
           "Login Succes",
           context,
           duration: Toast.LENGTH_LONG,
           gravity: Toast.TOP,
         );
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => MainScreen(rest: restaurant,)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => MainScreen(
+                      rest: restaurant,
+                    )));
       } else {
         Toast.show(
           "Login failed",

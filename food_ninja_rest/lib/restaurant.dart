@@ -5,8 +5,13 @@ class Restaurant {
       restphone,
       restlocation,
       restimage,
-      restdatereg;
-  
+      restdatereg,
+      reststatus,
+      restradius,
+      restlatitude,
+      restlongitude,
+      restdelivery;
+
   Restaurant(
       {this.restid,
       this.restemail,
@@ -14,5 +19,10 @@ class Restaurant {
       this.restphone,
       this.restlocation,
       this.restimage,
-      this.restdatereg});
+      this.restdatereg,
+      this.reststatus,
+      this.restradius,
+      this.restlatitude,
+      this.restlongitude,
+      this.restdelivery});
 }
