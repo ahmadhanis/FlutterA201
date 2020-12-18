@@ -30,15 +30,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
         title: Text('Registration'),
       ),
       body: Container(
-          child: Padding(
-              padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
-              child: SingleChildScrollView(
+        child: Padding(
+            padding: EdgeInsets.fromLTRB(30, 5, 30, 10),
+            child: SingleChildScrollView(
+                child: Column(children: [
+              Image.asset(
+                'assets/images/foodninjared.png',
+                scale: 2,
+              ),
+              Card(
+                elevation: 10,
+                  child: Padding(
+                padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
                 child: Column(
                   children: [
-                    Image.asset(
-                      'assets/images/foodninjared.png',
-                      scale: 2,
-                    ),
                     TextField(
                         controller: _namecontroller,
                         keyboardType: TextInputType.name,
@@ -106,7 +111,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             style: TextStyle(fontSize: 16))),
                   ],
                 ),
-              ))),
+              ))
+            ]))),
+      ),
     );
   }
 
@@ -115,13 +122,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _email = _emcontroller.text;
     _password = _pscontroller.text;
     _phone = _phcontroller.text;
-    if (validateEmail(_email) && validatePassword(_password)) {
-       Toast.show(
-          "Check your email/password",
-          context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.TOP,
-        );
+    if (_name.isEmpty || _email.isEmpty || _password.isEmpty || _phone.isEmpty) {
+      Toast.show(
+        "Please check your input",
+        context,
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.TOP,
+      );
+      return;
+    }
+    if (!validateEmail(_email) && !validatePassword(_password)) {
+      Toast.show(
+        "Check your email/password",
+        context,
+        duration: Toast.LENGTH_LONG,
+        gravity: Toast.TOP,
+      );
       return;
     }
     ProgressDialog pr = new ProgressDialog(context,
@@ -146,7 +162,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (_rememberMe) {
           savepref();
         }
-       _onLogin();
+        _onLogin();
       } else {
         Toast.show(
           "Registration failed",
@@ -188,9 +204,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return (!regex.hasMatch(value)) ? false : true;
   }
 
-  bool validatePassword(String value){
-        String  pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
-        RegExp regExp = new RegExp(pattern);
-        return regExp.hasMatch(value);
+  bool validatePassword(String value) {
+    String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$';
+    RegExp regExp = new RegExp(pattern);
+    return regExp.hasMatch(value);
   }
 }

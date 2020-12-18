@@ -7,7 +7,8 @@ class Restaurant {
       restradius,
       restlatitude,
       restlongitude,
-      restdelivery;
+      restdelivery,
+      restrating;
   Restaurant(
       {this.restid,
       this.restname,
@@ -17,5 +18,6 @@ class Restaurant {
       this.restradius,
       this.restlatitude,
       this.restlongitude,
-      this.restdelivery});
+      this.restdelivery,
+      this.restrating});
 }

@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: _onBackPressAppBar,
+        onWillPop: _onBackPressed,
         child: Scaffold(
             appBar: AppBar(
               title: Text('Login'),
@@ -235,9 +235,48 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<bool> _onBackPressAppBar() async {
-    SystemNavigator.pop();
-    print('Backpress');
-    return Future.value(false);
+Future<bool> _onBackPressed() {
+    return showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            title: new Text(
+              'Are you sure?',
+              style: TextStyle(
+                  //color: Colors.white,
+                  ),
+            ),
+            content: new Text(
+              'Do you want to exit an App',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                  onPressed: () {
+                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  },
+                  child: Text(
+                    "Exit",
+                    style: TextStyle(
+                        //color: Color.fromRGBO(101, 255, 218, 50),
+                        ),
+                  )),
+              MaterialButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(
+                        //color: Color.fromRGBO(101, 255, 218, 50),
+                        ),
+                  )),
+            ],
+          ),
+        ) ??
+        false;
   }
 }

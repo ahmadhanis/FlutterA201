@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String _password = "";
   bool _rememberMe = false;
   SharedPreferences prefs;
-
+double screenHeight, screenWidth;
   @override
   void initState() {
     loadpref();
@@ -29,12 +29,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
     return WillPopScope(
         onWillPop: _onBackPressAppBar,
         child: Scaffold(
-            appBar: AppBar(
-              title: Text('Login'),
-            ),
+            //backgroundColor: Colors.red,
             //resizeToAvoidBottomPadding: false,
             body: new Container(
               padding: EdgeInsets.all(30.0),
@@ -42,60 +42,76 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    SizedBox(height: screenHeight/12),
                     Image.asset(
                       'assets/images/foodninjared.png',
                       scale: 2,
                     ),
-                    TextField(
-                        controller: _emcontroller,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                            labelText: 'Email', icon: Icon(Icons.email))),
-                    TextField(
-                      controller: _pscontroller,
-                      decoration: InputDecoration(
-                          labelText: 'Password', icon: Icon(Icons.lock)),
-                      obscureText: true,
-                    ),
                     SizedBox(
                       height: 10,
                     ),
-                    MaterialButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      minWidth: 300,
-                      height: 50,
-                      child: Text('Login'),
-                      color: Colors.black,
-                      textColor: Colors.white,
-                      elevation: 15,
-                      onPressed: _onLogin,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Checkbox(
-                          value: _rememberMe,
-                          onChanged: (bool value) {
-                            _onChange(value);
-                          },
-                        ),
-                        Text('Remember Me', style: TextStyle(fontSize: 16))
-                      ],
-                    ),
-                    GestureDetector(
-                        onTap: _onRegister,
-                        child: Text('Register New Account',
-                            style: TextStyle(fontSize: 16))),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    GestureDetector(
-                        onTap: _onForgot,
-                        child: Text('Forgot Account',
-                            style: TextStyle(fontSize: 16))),
+                    Card(
+                      elevation: 10,
+                      child: Padding(
+                          padding: EdgeInsets.fromLTRB(15, 30, 15, 15),
+                          child: Column(
+                            children: [
+                              TextField(
+                                  controller: _emcontroller,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: InputDecoration(
+                                      labelText: 'Email',
+                                      icon: Icon(Icons.email))),
+                              TextField(
+                                controller: _pscontroller,
+                                decoration: InputDecoration(
+                                    labelText: 'Password',
+                                    icon: Icon(Icons.lock)),
+                                obscureText: true,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              MaterialButton(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                minWidth: 200,
+                                height: 50,
+                                child: Text('Login'),
+                                color: Colors.black,
+                                textColor: Colors.white,
+                                elevation: 15,
+                                onPressed: _onLogin,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Checkbox(
+                                    value: _rememberMe,
+                                    onChanged: (bool value) {
+                                      _onChange(value);
+                                    },
+                                  ),
+                                  Text('Remember Me',
+                                      style: TextStyle(fontSize: 16))
+                                ],
+                              ),
+                              GestureDetector(
+                                  onTap: _onRegister,
+                                  child: Text('Register New Account',
+                                      style: TextStyle(fontSize: 16))),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              GestureDetector(
+                                  onTap: _onForgot,
+                                  child: Text('Forgot Account',
+                                      style: TextStyle(fontSize: 16))),
+                            ],
+                          )),
+                    )
                   ],
                 ),
               ),
@@ -128,8 +144,10 @@ class _LoginScreenState extends State<LoginScreen> {
             password: _password,
             phone: userdata[2],
             datereg: userdata[3]);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => MainScreen(user: user)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => MainScreen(user: user)));
       } else {
         Toast.show(
           "Login failed",

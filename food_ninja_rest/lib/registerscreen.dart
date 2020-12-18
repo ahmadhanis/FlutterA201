@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
-import 'loginscreen.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:geolocator/geolocator.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -35,9 +35,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
     "Bukit Kayu Hitam",
     "Sintok",
   ];
+  String gmaploc = "";
   String selectedLoc = "Changlun";
   File _image;
   String pathAsset = 'assets/images/camera.png';
+  Position _currentPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _getLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,8 +113,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: _delcontroller,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            labelText: 'Deliver charge (RM per km)',
+                            labelText: 'Delivery charge (RM per km)',
                             icon: Icon(Icons.delivery_dining))),
+                    SizedBox(height: 10),
+                    Container(
+                        height: 30,
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              child: Icon(Icons.location_on),
+                              onTap: _searchCurLoc,
+                            ),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Text(gmaploc),
+                          ],
+                        )),
                     TextField(
                       controller: _pscontroller,
                       decoration: InputDecoration(
@@ -223,6 +246,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           "phone": _phone,
           "location": selectedLoc,
           "encoded_string": base64Image,
+          "delivery": _delcontroller.text,
+          "radius": _radcontroller.text,
+          "latitude":  _currentPosition.latitude.toString(),
+          "longitude": _currentPosition.longitude.toString(), 
           "imagename": _phone + "-${dateTime.microsecondsSinceEpoch}",
         }).then((res) {
       print(res.body);
@@ -466,6 +493,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (croppedFile != null) {
       _image = croppedFile;
       setState(() {});
+    }
+  }
+
+  _searchCurLoc() {
+    _getLocation();
+  }
+
+  Future<void> _getLocation() async {
+    try {
+      final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+      geolocator
+          .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+          .then((Position position) {
+        setState(() {
+          _currentPosition = position;
+          print("GEOLOCATOR");
+          if (_currentPosition != null) {
+            print(gmaploc);
+            gmaploc = _currentPosition.latitude.toString() +
+                "/" +
+                _currentPosition.longitude.toString();
+          }
+        });
+      }).catchError((e) {
+        print(e);
+      });
+    } catch (exception) {
+      print(exception.toString());
     }
   }
 }

@@ -10,7 +10,7 @@ import 'package:toast/toast.dart';
 
 class ShoppingCartScreen extends StatefulWidget {
   final User user;
-  
+
   const ShoppingCartScreen({Key key, this.user}) : super(key: key);
 
   @override
@@ -44,6 +44,76 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
       ),
       body: Column(
         children: [
+          cartList == null
+              ? Flexible(
+                  child: Container(
+                      child: Center(
+                          child: Text(
+                  titlecenter,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ))))
+              : Flexible(
+                  child: GridView.count(
+                  crossAxisCount: 1,
+                  childAspectRatio: (screenWidth / screenHeight) / 0.2,
+                  children: List.generate(cartList.length, (index) {
+                    return Padding(
+                        padding: EdgeInsets.all(1),
+                        child: Card(
+                            child: InkWell(
+                          onTap: () => _loadFoodDetails(index),
+                          onLongPress: () => _deleteOrderDialog(index),
+                          child: SingleChildScrollView(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                    height: screenHeight / 6,
+                                    width: screenWidth / 4,
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          "http://slumberjer.com/foodninjav2/images/foodimages/${cartList[index]['imagename']}.jpg",
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          new CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          new Icon(
+                                        Icons.broken_image,
+                                        size: screenWidth / 2,
+                                      ),
+                                    )),
+                                SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      cartList[index]['foodname'],
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text("RM " +
+                                        cartList[index]['foodprice'] +
+                                        " x " +
+                                        cartList[index]['foodqty'] +
+                                        " set"),
+                                    Text("Total RM " +
+                                        (double.parse(cartList[index]
+                                                    ['foodprice']) *
+                                                int.parse(
+                                                    cartList[index]['foodqty']))
+                                            .toStringAsFixed(2))
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        )));
+                  }),
+                )),
           Container(
               height: screenHeight / 4,
               width: screenWidth / 0.3,
@@ -64,71 +134,6 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   ],
                 ),
               ))),
-          Text("Content of your cart"),
-          cartList == null
-              ? Flexible(
-                  child: Container(
-                      child: Center(
-                          child: Text(
-                  titlecenter,
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                ))))
-              : Flexible(
-                  child: GridView.count(
-                  crossAxisCount: 2,
-                  childAspectRatio: (screenWidth / screenHeight) / 0.75,
-                  children: List.generate(cartList.length, (index) {
-                    return Padding(
-                        padding: EdgeInsets.all(1),
-                        child: Card(
-                            child: InkWell(
-                          onTap: () => _loadFoodDetails(index),
-                          onLongPress: () => _deleteOrderDialog(index),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Container(
-                                    height: screenHeight / 4,
-                                    width: screenWidth / 1.2,
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          "http://slumberjer.com/foodninjav2/images/foodimages/${cartList[index]['imagename']}.jpg",
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          new CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          new Icon(
-                                        Icons.broken_image,
-                                        size: screenWidth / 2,
-                                      ),
-                                    )),
-                                SizedBox(height: 5),
-                                Text(
-                                  cartList[index]['foodname'],
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text("RM " +
-                                    cartList[index]['foodprice'] +
-                                    " x " +
-                                    cartList[index]['foodqty'] +
-                                    " set"),
-                                Text("Total RM " +
-                                    (double.parse(
-                                                cartList[index]['foodprice']) *
-                                            int.parse(
-                                                cartList[index]['foodqty']))
-                                        .toStringAsFixed(2))
-                              ],
-                            ),
-                          ),
-                        )));
-                  }),
-                ))
         ],
       ),
     ));
@@ -166,8 +171,8 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
           titlecenter = "No Item Found";
         });
       } else {
-        totalPrice=0;
-        numcart=0;
+        totalPrice = 0;
+        numcart = 0;
         setState(() {
           var jsondata = json.decode(res.body);
           cartList = jsondata["cart"];

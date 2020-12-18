@@ -8,6 +8,7 @@ import 'restaurant.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:toast/toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class UpdateFoodScreen extends StatefulWidget {
   final Restaurant restaurant;
@@ -105,7 +106,7 @@ class _UpdateFoodScreenState extends State<UpdateFoodScreen> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             labelText: 'Quantity Available',
-                            icon: Icon(Icons.confirmation_num))),
+                            icon: Icon(MdiIcons.numeric))),
                     SizedBox(height: 10),
                     MaterialButton(
                       shape: RoundedRectangleBorder(
