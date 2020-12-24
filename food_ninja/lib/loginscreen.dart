@@ -37,23 +37,23 @@ double screenHeight, screenWidth;
             //backgroundColor: Colors.red,
             //resizeToAvoidBottomPadding: false,
             body: new Container(
-              padding: EdgeInsets.all(30.0),
+              padding: EdgeInsets.all(20.0),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: screenHeight/12),
+                    SizedBox(height: screenHeight/12.5),
                     Image.asset(
                       'assets/images/foodninjared.png',
                       scale: 2,
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                     Card(
                       elevation: 10,
                       child: Padding(
-                          padding: EdgeInsets.fromLTRB(15, 30, 15, 15),
+                          padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
                           child: Column(
                             children: [
                               TextField(
@@ -70,7 +70,7 @@ double screenHeight, screenWidth;
                                 obscureText: true,
                               ),
                               SizedBox(
-                                height: 20,
+                                height: 10,
                               ),
                               MaterialButton(
                                 shape: RoundedRectangleBorder(
@@ -84,7 +84,7 @@ double screenHeight, screenWidth;
                                 onPressed: _onLogin,
                               ),
                               SizedBox(
-                                height: 10,
+                                height: 5,
                               ),
                               Row(
                                 children: <Widget>[
@@ -103,7 +103,7 @@ double screenHeight, screenWidth;
                                   child: Text('Register New Account',
                                       style: TextStyle(fontSize: 16))),
                               SizedBox(
-                                height: 10,
+                                height: 5,
                               ),
                               GestureDetector(
                                   onTap: _onForgot,

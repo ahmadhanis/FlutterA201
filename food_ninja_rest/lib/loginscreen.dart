@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String _password = "";
   bool _rememberMe = false;
   SharedPreferences prefs;
-
+  double screenHeight, screenWidth;
   @override
   void initState() {
     loadpref();
@@ -31,77 +31,85 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
     return WillPopScope(
         onWillPop: _onBackPressed,
         child: Scaffold(
-            appBar: AppBar(
-              title: Text('Login'),
-            ),
+
             //resizeToAvoidBottomPadding: false,
             body: new Container(
-              padding: EdgeInsets.all(30.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Image.asset(
-                      'assets/images/foodninjablack.png',
-                      scale: 2,
-                    ),
-                    TextField(
-                        controller: _emcontroller,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                            labelText: 'Email', icon: Icon(Icons.email))),
-                    TextField(
-                      controller: _pscontroller,
-                      decoration: InputDecoration(
-                          labelText: 'Password', icon: Icon(Icons.lock)),
-                      obscureText: true,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    MaterialButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      minWidth: 300,
-                      height: 50,
-                      child: Text('Login'),
-                      color: Colors.black,
-                      textColor: Colors.white,
-                      elevation: 15,
-                      onPressed: _onLogin,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Checkbox(
-                          value: _rememberMe,
-                          onChanged: (bool value) {
-                            _onChange(value);
-                          },
-                        ),
-                        Text('Remember Me', style: TextStyle(fontSize: 16))
-                      ],
-                    ),
-                    GestureDetector(
-                        onTap: _onRegister,
-                        child: Text('Register New Account',
-                            style: TextStyle(fontSize: 16))),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    GestureDetector(
-                        onTap: _onForgot,
-                        child: Text('Forgot Account',
-                            style: TextStyle(fontSize: 16))),
-                  ],
-                ),
+          padding: EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: screenHeight / 14),
+              Image.asset(
+                'assets/images/foodninjablack.png',
+                scale: 2,
               ),
-            )));
+              SizedBox(height: 2),
+              Card(
+                  elevation: 10,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
+                    child: Column(children: [
+                      TextField(
+                          controller: _emcontroller,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                              labelText: 'Email', icon: Icon(Icons.email))),
+                      TextField(
+                        controller: _pscontroller,
+                        decoration: InputDecoration(
+                            labelText: 'Password', icon: Icon(Icons.lock)),
+                        obscureText: true,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      MaterialButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                        minWidth: 300,
+                        height: 50,
+                        child: Text('Login'),
+                        color: Colors.black,
+                        textColor: Colors.white,
+                        elevation: 15,
+                        onPressed: _onLogin,
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Checkbox(
+                            value: _rememberMe,
+                            onChanged: (bool value) {
+                              _onChange(value);
+                            },
+                          ),
+                          Text('Remember Me', style: TextStyle(fontSize: 16))
+                        ],
+                      ),
+                      GestureDetector(
+                          onTap: _onRegister,
+                          child: Text('Register New Account',
+                              style: TextStyle(fontSize: 16))),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      GestureDetector(
+                          onTap: _onForgot,
+                          child: Text('Forgot Account',
+                              style: TextStyle(fontSize: 16))),
+                    ]),
+                  ))
+            ],
+          )),
+        )));
   }
 
   Future<void> _onLogin() async {
@@ -235,7 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-Future<bool> _onBackPressed() {
+  Future<bool> _onBackPressed() {
     return showDialog(
           context: context,
           builder: (context) => new AlertDialog(

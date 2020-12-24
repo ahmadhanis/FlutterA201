@@ -112,13 +112,13 @@ class _MainScreenState extends State<MainScreen> {
           ),
           Column(children: [
             Tooltip(
-                message: 'Show Beverages',
+                message: 'Show Drinks',
                 child: IconButton(
                   icon: Icon(Icons.emoji_food_beverage),
                   iconSize: 32,
                   onPressed: () {
                     setState(() {
-                      type = "Beverage";
+                      type = "Drink";
                       _loadFoods(type);
                     });
                   },
@@ -134,7 +134,7 @@ class _MainScreenState extends State<MainScreen> {
             children: [
               Column(children: [
                 Tooltip(
-                    message: 'New Food/Beverage',
+                    message: 'New Food/Drink',
                     child: IconButton(
                       icon: Icon(Icons.fastfood),
                       iconSize: 32,

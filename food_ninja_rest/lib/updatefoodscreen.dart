@@ -48,7 +48,7 @@ class _UpdateFoodScreenState extends State<UpdateFoodScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Update Food/Beverage'),
+        title: Text('Update Food/Drink'),
       ),
       body: Container(
           child: Padding(
@@ -82,7 +82,7 @@ class _UpdateFoodScreenState extends State<UpdateFoodScreen> {
                           groupValue: _radioValue,
                           onChanged: _handleRadioValueChange,
                         ),
-                        Text("Beverage"),
+                        Text("Drink"),
                         new Radio(
                           value: 1,
                           groupValue: _radioValue,
@@ -135,7 +135,7 @@ class _UpdateFoodScreenState extends State<UpdateFoodScreen> {
           foodtype = "Food";
           break;
         case 1:
-          foodtype = "Beverage";
+          foodtype = "Drink";
           break;
       }
     });

@@ -96,7 +96,7 @@ class _RestScreenDetailsState extends State<RestScreenDetails> {
                   iconSize: 32,
                   onPressed: () {
                     setState(() {
-                      type = "Beverage";
+                      type = "Drink";
                       _loadFoods(type);
                     });
                   },
@@ -204,8 +204,10 @@ class _RestScreenDetailsState extends State<RestScreenDetails> {
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Text("RM " + foodList[index]['foodprice']),
-                                    Text("Qty: " + foodList[index]['foodqty']),
+                                    Text("RM " +
+                                        foodList[index]['foodprice'] +
+                                        " | Qty:" +
+                                        foodList[index]['foodqty']),
                                   ],
                                 ),
                               ),

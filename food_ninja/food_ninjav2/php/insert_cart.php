@@ -13,16 +13,16 @@ if ($resultidcheck->num_rows > 0) {
      while ($row = $resultidcheck ->fetch_assoc()){
          if ($row["RESTID"] != $restid ){
              $rid = $row["RESTID"];
-             $sqldelete = "DELETE FROM FOODORDER WHERE EMAIL = '$email' AND RESTID= '$rid'";
+             $sqldelete = "DELETE FROM CART WHERE EMAIL = '$email' AND RESTID= '$rid'";
              $conn->query($sqldelete);
          }
      }
 }
 
-$sqlcheck = "SELECT * FROM FOODORDER WHERE FOODID = '$foodid' AND EMAIL = '$email'";
+$sqlcheck = "SELECT * FROM CART WHERE FOODID = '$foodid' AND EMAIL = '$email'";
 $result = $conn->query($sqlcheck);
 if ($result->num_rows > 0) {
-    $sqlupdate = "UPDATE FOODORDER SET FOODQTY = '$foodqty' , REMARKS = '$remarks' WHERE FOODID = '$foodid' AND EMAIL = '$email'";
+    $sqlupdate = "UPDATE CART SET FOODQTY = '$foodqty' , REMARKS = '$remarks' WHERE FOODID = '$foodid' AND EMAIL = '$email'";
     if ($conn->query($sqlupdate) === TRUE){
        echo "success";
     }  

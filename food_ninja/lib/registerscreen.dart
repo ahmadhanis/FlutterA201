@@ -31,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       body: Container(
         child: Padding(
-            padding: EdgeInsets.fromLTRB(30, 5, 30, 10),
+            padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
             child: SingleChildScrollView(
                 child: Column(children: [
               Image.asset(
@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Card(
                 elevation: 10,
                   child: Padding(
-                padding: EdgeInsets.fromLTRB(15, 10, 15, 15),
+                padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
                 child: Column(
                   children: [
                     TextField(
@@ -80,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       obscureText: _passwordVisible,
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 5),
                     Row(
                       children: <Widget>[
                         Checkbox(
@@ -92,11 +92,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Text('Remember Me', style: TextStyle(fontSize: 16))
                       ],
                     ),
-                    SizedBox(height: 10),
+                    //SizedBox(height: 5),
                     MaterialButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0)),
-                      minWidth: 300,
+                      minWidth: 200,
                       height: 50,
                       child: Text('Register'),
                       color: Colors.black,
@@ -104,7 +104,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       elevation: 15,
                       onPressed: _onRegister,
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 5),
                     GestureDetector(
                         onTap: _onLogin,
                         child: Text('Already register',

@@ -41,16 +41,48 @@ class _MainScreenState extends State<MainScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     TextEditingController _foodnamecontroller = TextEditingController();
 
-    //var date = new DateTime.now().toString();
-    //var dateParse = DateTime.parse(date);
-    // var formattedDate =
-    //     "${dateParse.hour}:${dateParse.minute}-${dateParse.day}/${dateParse.month}/${dateParse.year}";
-
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text('Available Restaurants'),
+        //title: Text('Available Restaurants'),
         actions: <Widget>[
+          Container(
+              width: screenWidth / 2.2,
+              padding: EdgeInsets.fromLTRB(3, 10, 1, 10),
+              child: TextField(
+                autofocus: false,
+                controller: _foodnamecontroller,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: new OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(5.0),
+                    ),
+                  ),
+                  prefixIcon: Icon(Icons.fastfood),
+                ),
+              )),
+          SizedBox(width: 5),
+          Flexible(
+            child: IconButton(
+              icon: Icon(Icons.search),
+              iconSize: 24,
+              onPressed: () {
+                _loadSearchFood(
+                    selectedLoc, selectedRating, _foodnamecontroller.text);
+              },
+            ),
+          ),
+          Flexible(
+            child: IconButton(
+              icon: Icon(Icons.restore),
+              iconSize: 24,
+              onPressed: () {
+                _loadRestaurant(selectedLoc, selectedRating);
+              },
+            ),
+          ),
           IconButton(
             icon: _visible
                 ? new Icon(Icons.expand_more)
@@ -75,7 +107,7 @@ class _MainScreenState extends State<MainScreen> {
           //_bookScreen();
         },
         icon: Icon(Icons.add_shopping_cart),
-        label: Text(""),
+        label: Text("10"),
       ),
       body: Column(
         children: [
@@ -83,7 +115,7 @@ class _MainScreenState extends State<MainScreen> {
           Visibility(
               visible: _visible,
               child: Container(
-                  height: 70,
+                  height: 50,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -93,30 +125,39 @@ class _MainScreenState extends State<MainScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text("Select Location"),
-                          DropdownButton(
-                            //sorting dropdownoption
-                            hint: Text(
-                              'Select Location',
-                              style: TextStyle(
-                                  //color: Color.fromRGBO(101, 255, 218, 50),
-                                  ),
-                            ), // Not necessary for Option 1
-                            value: selectedLoc,
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedLoc = newValue;
-                                print(selectedLoc);
-                                _loadRestaurant(selectedLoc, selectedRating);
-                              });
-                            },
-                            items: locList.map((selectedLoc) {
-                              return DropdownMenuItem(
-                                child: new Text(selectedLoc.toString(),
-                                    style: TextStyle(color: Colors.black)),
+                          Container(
+                              height: 30,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.red),
+                                borderRadius: BorderRadius.all(Radius.circular(
+                                        5.0) //                 <--- border radius here
+                                    ),
+                              ),
+                              child: DropdownButton(
+                                //sorting dropdownoption
+                                hint: Text(
+                                  'Select Location',
+                                  style: TextStyle(
+                                      //color: Color.fromRGBO(101, 255, 218, 50),
+                                      ),
+                                ), // Not necessary for Option 1
                                 value: selectedLoc,
-                              );
-                            }).toList(),
-                          ),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    selectedLoc = newValue;
+                                    print(selectedLoc);
+                                    _loadRestaurant(
+                                        selectedLoc, selectedRating);
+                                  });
+                                },
+                                items: locList.map((selectedLoc) {
+                                  return DropdownMenuItem(
+                                    child: new Text(selectedLoc.toString(),
+                                        style: TextStyle(color: Colors.black)),
+                                    value: selectedLoc,
+                                  );
+                                }).toList(),
+                              )),
                         ],
                       ),
 
@@ -127,100 +168,41 @@ class _MainScreenState extends State<MainScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text("Rating"),
-                          DropdownButton(
-                            //sorting dropdownoption
-                            hint: Text(
-                              'Rating',
-                              style: TextStyle(
-                                  //color: Color.fromRGBO(101, 255, 218, 50),
+                          Container(
+                            height: 30,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.red),
+                              borderRadius: BorderRadius.all(Radius.circular(
+                                      5.0) //                 <--- border radius here
                                   ),
-                            ), // Not necessary for Option 1
-                            value: selectedRating,
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedRating = newValue;
-                                print(selectedRating);
-                                _loadRestaurant(selectedLoc, selectedRating);
-                              });
-                            },
-                            items: ratingList.map((selectedRating) {
-                              return DropdownMenuItem(
-                                child: new Text(selectedRating.toString(),
-                                    style: TextStyle(color: Colors.black)),
-                                value: selectedRating,
-                              );
-                            }).toList(),
-                          ),
+                            ),
+                            child: DropdownButton(
+                              //sorting dropdownoption
+                              hint: Text(
+                                'Rating',
+                                style: TextStyle(
+                                    //color: Color.fromRGBO(101, 255, 218, 50),
+                                    ),
+                              ), // Not necessary for Option 1
+                              value: selectedRating,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedRating = newValue;
+                                  print(selectedRating);
+                                  _loadRestaurant(selectedLoc, selectedRating);
+                                });
+                              },
+                              items: ratingList.map((selectedRating) {
+                                return DropdownMenuItem(
+                                  child: new Text(selectedRating.toString(),
+                                      style: TextStyle(color: Colors.black)),
+                                  value: selectedRating,
+                                );
+                              }).toList(),
+                            ),
+                          )
                         ],
                       ),
-                    ],
-                  ))),
-          //SizedBox(height: 5),
-          Visibility(
-              visible: _visible,
-              child: Container(
-                  width: screenWidth / 0.7,
-                  height: 40,
-                  //color: Colors.blue,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          child: TextField(
-                        controller: _foodnamecontroller,
-                        decoration: InputDecoration(
-                          border: new OutlineInputBorder(
-                            borderRadius: const BorderRadius.all(
-                              const Radius.circular(5.0),
-                            ),
-                          ),
-                          prefixIcon: Icon(Icons.fastfood),
-                        ),
-                      )),
-                      SizedBox(width: 5),
-                      Flexible(
-                        child: IconButton(
-                          icon: Icon(Icons.search),
-                          iconSize: 28,
-                          onPressed: () {
-                            _loadSearchFood(selectedLoc, selectedRating,
-                                _foodnamecontroller.text);
-                          },
-                        ),
-                      ),
-                      Flexible(
-                        child: IconButton(
-                          icon: Icon(Icons.restore),
-                          iconSize: 28,
-                          onPressed: () {
-                            _loadRestaurant(selectedLoc, selectedRating);
-                          },
-                        ),
-                      ),
-                      // Flexible(
-                      //     child: MaterialButton(
-                      //         color: Colors.red,
-                      //         onPressed: () => {
-                      //               _loadSearchFood(selectedLoc, selectedRating,
-                      //                   _foodnamecontroller.text)
-                      //             },
-                      //         elevation: 5,
-                      //         child: Text(
-                      //           "Search",
-                      //           style: TextStyle(color: Colors.white),
-                      //         ))),
-                      // Flexible(
-                      //     child: MaterialButton(
-                      //         color: Colors.red,
-                      //         onPressed: () => {
-                      //               _loadSearchFood(selectedLoc, selectedRating,
-                      //                   _foodnamecontroller.text)
-                      //             },
-                      //         elevation: 5,
-                      //         child: Text(
-                      //           "Reset",
-                      //           style: TextStyle(color: Colors.white),
-                      //         )))
                     ],
                   ))),
           Divider(color: Colors.grey),

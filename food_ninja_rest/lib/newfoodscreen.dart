@@ -36,7 +36,7 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Food/Beverage'),
+        title: Text('New Food/Drink'),
       ),
       body: Container(
           child: Padding(
@@ -78,7 +78,7 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
                           groupValue: _radioValue,
                           onChanged: _handleRadioValueChange,
                         ),
-                        Text("Beverage"),
+                        Text("Drink"),
                         new Radio(
                           value: 1,
                           groupValue: _radioValue,
@@ -131,7 +131,7 @@ class _NewFoodScreenState extends State<NewFoodScreen> {
           foodtype = "Food";
           break;
         case 1:
-          foodtype = "Beverage";
+          foodtype = "Drink";
           break;
       }
     });
