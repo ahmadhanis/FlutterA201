@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'billscreen.dart';
 import 'food.dart';
 import 'foodscreen.dart';
 import 'user.dart';
@@ -299,7 +300,9 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                           color: Colors.red,
                           textColor: Colors.white,
                           elevation: 10,
-                          onPressed: () => {},
+                          onPressed: () => {
+                            _makePaymentDialog(),
+                          },
                         ),
                       ],
                     ),
@@ -681,5 +684,60 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
     } catch (exception) {
       print(exception.toString());
     }
+  }
+
+  _makePaymentDialog() {
+     showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+        title: new Text(
+          'Proceed with payment?',
+          style: TextStyle(
+              //color: Colors.white,
+              ),
+        ),
+        content: new Text(
+          'Are you sure to pay RM ' + payable.toStringAsFixed(2) + "?",
+          style: TextStyle(
+              //color: Colors.white,
+              ),
+        ),
+        actions: <Widget>[
+          MaterialButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+                _makePayment();
+              },
+              child: Text(
+                "Ok",
+                style: TextStyle(
+                    //color: Color.fromRGBO(101, 255, 218, 50),
+                    ),
+              )),
+          MaterialButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text(
+                "Cancel",
+                style: TextStyle(
+                    //color: Color.fromRGBO(101, 255, 218, 50),
+                    ),
+              )),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _makePayment() async {
+     await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => BillScreen(
+                  user: widget.user,
+                  val: payable.toStringAsFixed(2),
+                )));
   }
 }
