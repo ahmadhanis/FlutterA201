@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'billscreen.dart';
 import 'food.dart';
@@ -739,5 +738,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                   user: widget.user,
                   val: payable.toStringAsFixed(2),
                 )));
+                _calculatePayment();
+                _loadCart();
   }
 }

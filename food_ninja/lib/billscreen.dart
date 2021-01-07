@@ -29,7 +29,7 @@ class _BillScreenState extends State<BillScreen> {
             Expanded(
               child: WebView(
                 initialUrl:
-                    'http://slumberjer.com/foodninjav2/php/payment.php?email=' +
+                    'http://slumberjer.com/foodninjav2/php/generate_bill.php?email=' +
                         widget.user.email +
                         '&mobile=' +
                         widget.user.phone +
